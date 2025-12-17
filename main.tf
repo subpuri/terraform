@@ -9,8 +9,24 @@ terraform {
   } 
 }
 
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name  = "name"
+    value = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+  
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+
+  }
+}
+
 resource "aws_instance" "example" {
-  ami           = "ami-0f5ee92e2d63afc18" # ap-south-1 Amazon Linux 2
+  ami           = data.aws_ami.amazon_linux.id
   instance_type = "t2.micro"
 
   tags = {
